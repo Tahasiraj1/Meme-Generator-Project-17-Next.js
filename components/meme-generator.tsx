@@ -91,7 +91,7 @@ export default function MemeGenerator() {
                             Meme Generator
                         </h1>
                         <p className="text-black font-semibold text-primary-foreground">
-                            Create custom memes with out easy-to-use generator.
+                            Create custom memes with our easy-to-use generator.
                         </p>
                     </div>
                     {/* Loading spinner or meme carousel */}
