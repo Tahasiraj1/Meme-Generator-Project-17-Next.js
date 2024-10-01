@@ -2,9 +2,9 @@
 import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Draggable from "react-draggable";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import html2canvas from 'html2canvas';
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,8 +26,10 @@ export default function MemeGenerator() {
     const [memes, setMemes] = useState<Meme[]>([]);
     const [visibleMemes, setVisibleMemes] = useState<Meme[]>([]);
     const [selectedMeme, setSelectedMeme] = useState<Meme | null>(null);
-    const [text, setText] = useState<string>("");
-    const [textPosition, setTextPosition] = useState<Position>({ x: 0, y: 0 });
+    const [inputText1, setInputText1] = useState<string>("");
+    const [inputText2, setInputText2] = useState<string>("");
+    const [position1, setPosition1] = useState<Position>({ x: 0, y: 0 });
+    const [position2, setPosition2] = useState<Position>({ x: 0, y: 0 });
     const [loading, setLoading] = useState<boolean>(true);
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const memeRef = useRef<HTMLDivElement>(null);
@@ -62,16 +64,26 @@ export default function MemeGenerator() {
         }
     };
 
+    const handleDrag1 = (e: DraggableEvent, data: DraggableData) => {
+        setPosition1({ x: data.x, y: data.y });
+    };
+
+    const handleDrag2 = (e: DraggableEvent, data: DraggableData) => {
+        setPosition2({ x: data.x, y: data.y });
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground"
-        style={{
+        <div className="relative flex flex-col items-center justify-center min-h-screen">
+            <div className="absolute inset-0"
+            style={{
             backgroundImage: `url('/funny.jpg')`,
             backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
             backgroundSize: 'cover',
-            backgroundAttachment: 'fixed'
+            filter: 'blur(8px)'
         }}
-        >
-            <div className="max-w-4xl w-full px-4 py-8 sm:px-6 lg:px-8 bg-gray-400 bg-opacity-90">
+            ></div>
+            <div className="relative max-w-4xl w-full px-4 py-8 sm:px-6 lg:px-8 bg-gray-400 bg-opacity-90">
                 <div className="flex flex-col items-center justify-center space-y-8">
                     {/* Header section */}
                     <div className="text-center space-y-2">
@@ -112,7 +124,7 @@ export default function MemeGenerator() {
                         {visibleMemes.length < memes.length && (
                             <Button
                             onClick={loadMoreMemes}
-                            className="mt-4"
+                            className="mt-4 rounded-full active:scale-95 transition-transform transform duration-300"
                             disabled={moreLoading}
                             >
                                 {moreLoading ? (
@@ -126,7 +138,7 @@ export default function MemeGenerator() {
                     )}
                     {/* Meme customization section */}
                     {selectedMeme && (
-                        <Card className="w-full max-w-md">
+                        <Card className="w-full max-w-md rounded-2xl">
                             <CardHeader>
                                 <CardTitle>Customize Your Meme</CardTitle>
                             </CardHeader>
@@ -143,33 +155,51 @@ export default function MemeGenerator() {
                                     className="object-cover w-full h-full"
                                     />
                                     <Draggable
-                                    position={textPosition}
-                                    onStop={(_, data) => {
-                                        setTextPosition({ x: data.x, y: data.y });
-                                    }}
+                                    bounds="parent"
+                                    position={position1}
+                                    onDrag={handleDrag1}
                                     >
                                         <div
                                         className="absolute text-black text-xl font-bold"
-                                        style={{ left: textPosition.x, top: textPosition.y }}
+                                        style={{ left: position1.x, top: position1.y }}
                                         >
-                                            {text}
+                                            {inputText1}
+                                        </div>
+                                    </Draggable>
+                                    <Draggable
+                                    bounds="parent"
+                                    position={position2}
+                                    onDrag={handleDrag2}
+                                    >
+                                        <div
+                                        className="absolute text-black text-xl font-bold"
+                                        style={{ left: position2.x, top: position2.y }}
+                                        >
+                                            {inputText2}
                                         </div>
                                     </Draggable>
                                 </div>
                                 <div className="mt-4">
-                                    {/* Text input for adding meme text */}
-                                    <Label htmlFor="meme-text">Add your text</Label>
-                                    <Textarea
-                                    id="meme-text"
-                                    placeholder="Enter you meme text"
-                                    className="mt-1 w-full"
-                                    rows={3}
-                                    value={text}
-                                    onChange={(e) => setText(e.target.value)}
+                                    {/* Text inputs for adding meme text */}
+                                    <Label htmlFor="text1">First</Label>
+                                    <Input
+                                    type="text"
+                                    id="text1"
+                                    className="mt-1 w-full rounded-2xl border-2 border-gray-300"
+                                    value={inputText1}
+                                    onChange={(e) => setInputText1(e.target.value)}
+                                    />
+                                    <Label htmlFor="text2">Second</Label>
+                                    <Input
+                                    type="text"
+                                    id="text2"
+                                    className="mt-1 w-full rounded-2xl border-2 border-gray-300"
+                                    value={inputText2}
+                                    onChange={(e) => setInputText2(e.target.value)}
                                     />
                                 </div>
                                 <Button
-                                className="w-full mt-4"
+                                className="w-full mt-4 rounded-full active:scale-95 transition-transform transform duration-300"
                                 onClick={handleDownload}
                                 >
                                     <Download />
