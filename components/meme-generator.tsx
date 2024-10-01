@@ -83,14 +83,14 @@ export default function MemeGenerator() {
             filter: 'blur(8px)'
         }}
             ></div>
-            <div className="relative max-w-4xl w-full px-4 py-8 sm:px-6 lg:px-8 bg-gray-400 bg-opacity-90">
+            <div className="relative max-w-4xl w-full px-4 py-8 sm:px-6 lg:px-8 bg-gradient-to-r from-black/80 to-gray-700/80">
                 <div className="flex flex-col items-center justify-center space-y-8">
                     {/* Header section */}
                     <div className="text-center space-y-2">
-                        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full">
                             Meme Generator
                         </h1>
-                        <p className="text-black font-semibold">
+                        <p className="text-black font-semibold text-primary-foreground">
                             Create custom memes with out easy-to-use generator.
                         </p>
                     </div>
@@ -124,7 +124,7 @@ export default function MemeGenerator() {
                         {visibleMemes.length < memes.length && (
                             <Button
                             onClick={loadMoreMemes}
-                            className="mt-4 rounded-full active:scale-95 transition-transform transform duration-300"
+                            className="text-black mt-4 rounded-full active:scale-95 transition-transform transform duration-300 bg-gradient-to-r from-orange-500 to-yellow-400"
                             disabled={moreLoading}
                             >
                                 {moreLoading ? (
@@ -199,7 +199,7 @@ export default function MemeGenerator() {
                                     />
                                 </div>
                                 <Button
-                                className="w-full mt-4 rounded-full active:scale-95 transition-transform transform duration-300"
+                                className="w-full mt-4 rounded-full active:scale-95 transition-transform transform duration-300 bg-blue-700"
                                 onClick={handleDownload}
                                 >
                                     <Download />
